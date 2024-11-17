@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSL Translator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-size: 70px;">We call it... <span style="color: #e20dd1;">BreTa!</span></h1>
+        
+        <!-- Suggestions bar -->
+        <div class="suggestions-bar">
+            <div class="suggestion" onclick="usesuggestion('We are excited to be part of this event')">
+                <i class="fas fa-lightbulb"></i>
+                We are excited to be part of this event
+            </div>
+            <div class="suggestion" onclick="usesuggestion('Let\'s go party tonight')">
+                <i class="fas fa-lightbulb"></i>
+                Let's go party tonight
+            </div>
+            <div class="suggestion" onclick="usesuggestion('I hope it will snow this winter')">
+                <i class="fas fa-lightbulb"></i>
+                I hope it will snow this winter
+            </div>
+            <div class="suggestion" onclick="usesuggestion('You only live once so keep enjoying')">
+                <i class="fas fa-lightbulb"></i>
+                You only live once so keep enjoying
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <textarea id="inputText" placeholder="Enter text to translate..." rows="3"></textarea>
+            <button id="micButton" class="mic-button">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+
+        <button id="translateButton" class="translate-button">
+            Translate
+            <div class="loading-spinner hidden"></div>
+        </button>
+
+        <div id="resultContainer" class="result-container hidden">
+            <div class="translation-section">
+                <h2>BSL Gloss Translation</h2>
+                <div id="translationText" class="translation-text"></div>
+            </div>
+            
+            <div class="video-section">
+                <h2>BSL Video</h2>
+                <div id="videoContainer" class="video-container">
+                    <div id="singleVideoView">
+                        <video id="bslVideo" controls class="hidden">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div id="videoPlaceholder" class="video-placeholder">
+                            Video will appear here
+                        </div>
+                    </div>
+                    <div id="multiVideoView" class="video-grid hidden">
+                        <div id="demo1" class="video-item hidden">
+                            <label>Output Video</label>
+                            <video src="/static/videos/demo1.mp4" controls></video>
+                        </div>
+                        <div id="demo2" class="video-item hidden">
+                            <label>Output Video</label>
+                            <video src="/static/videos/demo2.mp4" controls></video>
+                        </div>
+                        <div id="demo3" class="video-item hidden">
+                            <label>Output Video</label>
+                            <video src="/static/videos/demo3.mp4" controls></video>
+                        </div>
+                        <div id="demo4" class="video-item hidden">
+                            <label>Output Video</label>
+                            <video src="/static/videos/demo4.mp4" controls></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 style="text-align: center;">Thanks to:</h2>
+        <img height="160" width="700"  src="https://ollama.icu/wp-content/uploads/2024/09/Meta-Llama-3.2.png" >
+        
+        <img height="150" width="450"  src="https://raw.githubusercontent.com/RMNCLDYO/groq-ai-toolkit/main/.github/groq-logo.png" >
+        <img height="150" width="450"  src="https://wl-lms-usercontent.com/tenants/logos/10410/000/010/410/large/tmp_2F1229184_2F1679307156652_2FNEBIUS__28Deep_Blue_29.png" >
+
+        <img height="140" width="650"  src="data:image/png;base64,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">
+
+        
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
